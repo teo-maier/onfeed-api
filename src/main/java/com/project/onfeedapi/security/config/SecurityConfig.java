@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Collections;
 
 @EnableWebSecurity
 @Configuration
@@ -35,19 +38,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf()
+                .cors().and().csrf()
                 .disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests()
+                .requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/form").permitAll()
+                .requestMatchers(HttpMethod.GET, "/form/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/form/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/question").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/question/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/question/**").permitAll()
+                .anyRequest()
+                .authenticated()
 //                .logout()
 //                .logoutUrl("/api/v1/auth/logout")
 //                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
@@ -67,7 +75,7 @@ public class SecurityConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
         corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("*"));
         corsConfiguration.addExposedHeader(HttpHeaders.CONTENT_DISPOSITION);
         corsConfiguration.addExposedHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS);
         corsConfiguration.addExposedHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS);

@@ -26,11 +26,6 @@ import java.util.stream.Collectors;
 public class EmployeeController {
     private final EmployeeService employeeService;
 
-    @PreAuthorize("@authorizationService.employeeTypeIn({" +
-            "T(com.ontegra.ontrack.utils.EmployeeType).MANAGER," +
-            "T(com.ontegra.ontrack.utils.EmployeeType).ADMIN" +
-            "})"
-    )
     @GetMapping("/all-paginated")
     public ResponseEntity<AbstractResponseDTO> getAll(PaginatedRequestDTO pagination) {
         Page<EmployeeDTO> employeeDTOList = employeeService.getAllEmployeesPaginated(pagination).map(EmployeeMapper::convertToDTO);
@@ -66,61 +61,38 @@ public class EmployeeController {
 //        return ResponseHandler.handleResponse("All employees with status active", employeeDTOList);
 //    }
 
-    @PreAuthorize("@authorizationService.employeeTypeIn({ " +
-            "T(com.ontegra.ontrack.utils.EmployeeType).ADMIN" +
-            "})"
-    )
     @PutMapping("/delete/{employeeId}")
     public ResponseEntity<AbstractResponseDTO> deleteEmployee(@PathVariable("employeeId") long id) {
-        try {
-            Employee employee = employeeService.getEmployee(id);
-            EmployeeDTO employeeDTO = EmployeeMapper.convertToDTO(employee);
-            employeeService.deleteEmployee(employeeDTO.getId());
-            return ResponseHandler.handleResponse("User disable", employeeDTO);
-        } catch (EmployeeException e) {
-            return CustomExceptionHandler.handleException(e);
-        }
+        Employee employee = employeeService.getEmployee(id);
+        EmployeeDTO employeeDTO = EmployeeMapper.convertToDTO(employee);
+        employeeService.deleteEmployee(employeeDTO.getId());
+        return ResponseHandler.handleResponse("User disable", employeeDTO);
     }
 
-    @PreAuthorize("@authorizationService.employeeTypeIn({ " +
-            "T(com.ontegra.ontrack.utils.EmployeeType).ADMIN" +
-            "})"
-    )
+
     @PostMapping
     public ResponseEntity<AbstractResponseDTO> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
         Employee newEmployee = EmployeeMapper.convertToModel(employeeDTO);
-        try {
-            newEmployee = employeeService.createEmployee(newEmployee);
-            EmployeeDTO newEmployeeDTO = EmployeeMapper.convertToDTO(newEmployee);
-            return ResponseHandler.handleResponse("User created successfully", newEmployeeDTO);
-        } catch (EmployeeException e) {
-            return CustomExceptionHandler.handleException(e);
-        }
+        newEmployee = employeeService.createEmployee(newEmployee);
+        EmployeeDTO newEmployeeDTO = EmployeeMapper.convertToDTO(newEmployee);
+        return ResponseHandler.handleResponse("User created successfully", newEmployeeDTO);
     }
 
     @PreAuthorize("@authorizationService.hasAccessToEmployee(#employeeId)")
     @GetMapping("/{employeeId}")
     public ResponseEntity<AbstractResponseDTO> getEmployee(@PathVariable("employeeId") long id) {
         Employee employee = null;
-        try {
-            employee = employeeService.getEmployee(id);
-            EmployeeDTO employeeDTO = EmployeeMapper.convertToDTO(employee);
-            return ResponseHandler.handleResponse("Employee by id", employeeDTO);
-        } catch (EmployeeException e) {
-            return CustomExceptionHandler.handleException(e);
-        }
+        employee = employeeService.getEmployee(id);
+        EmployeeDTO employeeDTO = EmployeeMapper.convertToDTO(employee);
+        return ResponseHandler.handleResponse("Employee by id", employeeDTO);
     }
 
     @GetMapping("/me")
     public ResponseEntity<AbstractResponseDTO> getEmployeeDetails(Principal principal) {
         Employee newEmployee = null;
-        try {
-            newEmployee = employeeService.getEmployeeByEmail(principal.getName());
-            EmployeeDTO newEmployeeDTO = EmployeeMapper.convertToDTO(newEmployee);
-            return ResponseHandler.handleResponse("Employee's details", newEmployeeDTO);
-        } catch (EmployeeException e) {
-            return CustomExceptionHandler.handleException(e);
-        }
+        newEmployee = employeeService.getEmployeeByEmail(principal.getName());
+        EmployeeDTO newEmployeeDTO = EmployeeMapper.convertToDTO(newEmployee);
+        return ResponseHandler.handleResponse("Employee's details", newEmployeeDTO);
     }
 
     @PreAuthorize("@authorizationService.employeeTypeIn({ " +
@@ -129,26 +101,18 @@ public class EmployeeController {
     )
     @PutMapping("/toggle-status/{employeeId}")
     public ResponseEntity<AbstractResponseDTO> toggleEmployeeStatus(@PathVariable("employeeId") long id) {
-        try {
-            boolean changedEmployeeStatus = employeeService.toggleEmployeeStatus(id);
-            return ResponseHandler.handleResponse("Status changed", changedEmployeeStatus);
-        } catch (EmployeeException e) {
-            return CustomExceptionHandler.handleException(e);
-        }
+        boolean changedEmployeeStatus = employeeService.toggleEmployeeStatus(id);
+        return ResponseHandler.handleResponse("Status changed", changedEmployeeStatus);
     }
 
     @PutMapping(value = "/me", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<AbstractResponseDTO> editEmployee(@RequestPart("employeeDetailsDTO") EmployeeDTO employeeDTO,
                                                             Principal principal) {
         Employee employee = null;
-        try {
-            employee = employeeService.getEmployeeByEmail(principal.getName());
-            employeeService.editCurrentEmployee(employee, employeeDTO);
-            EmployeeDTO editedEmployee = EmployeeMapper.convertToDTO(employee);
-            return ResponseHandler.handleResponse("Current employee edited with avatar", editedEmployee);
-        } catch (EmployeeException e) {
-            return CustomExceptionHandler.handleException(e);
-        }
+        employee = employeeService.getEmployeeByEmail(principal.getName());
+        employeeService.editCurrentEmployee(employee, employeeDTO);
+        EmployeeDTO editedEmployee = EmployeeMapper.convertToDTO(employee);
+        return ResponseHandler.handleResponse("Current employee edited with avatar", editedEmployee);
     }
 
 
@@ -160,14 +124,10 @@ public class EmployeeController {
     public ResponseEntity<AbstractResponseDTO> editEmployeeById(@PathVariable("employeeId") long id,
                                                                 @RequestBody EmployeeDTO employeeDTO) {
         Employee employee = null;
-        try {
-            employee = employeeService.getEmployee(id);
-            employeeService.editEmployee(employee, employeeDTO);
-            EmployeeDTO editedEmployee = EmployeeMapper.convertToDTO(employee);
-            return ResponseHandler.handleResponse("Employee edited", editedEmployee);
-        } catch (EmployeeException e) {
-            return CustomExceptionHandler.handleException(e);
-        }
+        employee = employeeService.getEmployee(id);
+        employeeService.editEmployee(employee, employeeDTO);
+        EmployeeDTO editedEmployee = EmployeeMapper.convertToDTO(employee);
+        return ResponseHandler.handleResponse("Employee edited", editedEmployee);
     }
 
 //    @PutMapping("/password")

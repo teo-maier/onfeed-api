@@ -1,7 +1,7 @@
 package com.project.onfeedapi.utils.response;
 
 import com.project.onfeedapi.dto.response.AbstractResponseDTO;
-import com.project.onfeedapi.dto.exception.ResponseDTO;
+import com.project.onfeedapi.dto.response.ResponseDTO;
 import org.springframework.http.ResponseEntity;
 
 public class ResponseHandler {

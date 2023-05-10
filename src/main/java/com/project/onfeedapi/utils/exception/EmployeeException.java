@@ -2,9 +2,7 @@ package com.project.onfeedapi.utils.exception;
 
 
 
-import java.io.IOException;
-
-public class EmployeeException extends IOException {
+public class EmployeeException extends RuntimeException {
     public final ErrorCode errorCode;
     public final String message;
 

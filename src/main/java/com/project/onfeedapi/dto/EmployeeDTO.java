@@ -3,7 +3,6 @@ package com.project.onfeedapi.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.onfeedapi.utils.EmployeeType;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @NoArgsConstructor

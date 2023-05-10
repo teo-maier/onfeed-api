@@ -1,25 +1,24 @@
 package com.project.onfeedapi.dto.response;
 
+import com.project.onfeedapi.dto.response.AbstractResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class ExceptionDTO extends AbstractResponseDTO {
-    private int code;
+public class ResponseDTO<T> extends AbstractResponseDTO {
+    private T body;
     private String message;
 
-    public ExceptionDTO(String message) {
+    public ResponseDTO(String message) {
         super(message);
     }
 
     @Builder(builderMethodName = "fullBuilder")
-    public ExceptionDTO(String message, int code) {
+    public ResponseDTO(String message, T body) {
         super(message);
-        this.code = code;
+        this.body = body;
     }
 }

@@ -53,14 +53,14 @@ public class EmployeeService {
         return employeeRepository.findAll(PaginationUtils.createPageableWithSort(request));
     }
 
-    public Employee getEmployee(long id) throws EmployeeException {
+    public Employee getEmployee(long id) {
         if (id < 0) {
             throw new EmployeeException("Invalid param", ErrorCode.GENERAL_ERROR);
         }
         return employeeRepository.findById(id).orElseThrow(() -> new EmployeeException("Employee does not exist", ErrorCode.NOT_FOUND));
     }
 
-    public List<Employee> getAdminList(List<Employee> employees) throws EmployeeException {
+    public List<Employee> getAdminList(List<Employee> employees) {
         List<Employee> adminList;
         adminList = employees.stream()
                 .filter(e -> e.getType() == EmployeeType.ADMIN)
@@ -73,7 +73,7 @@ public class EmployeeService {
     }
 
     @Transactional
-    public void deleteEmployee(long id) throws EmployeeException {
+    public void deleteEmployee(long id) {
         existsEmployeeById(id);
         boolean employeeStatus = employeeRepository.getStatusById(id);
         if (employeeStatus) {
@@ -83,14 +83,14 @@ public class EmployeeService {
         }
     }
 
-    private void existsEmployeeById(long id) throws EmployeeException {
+    private void existsEmployeeById(long id) {
         boolean exists = employeeRepository.existsById(id);
         if (!exists) {
             throw new EmployeeException("Employee does not exist", ErrorCode.NOT_FOUND);
         }
     }
 
-    public Employee createEmployee(Employee employee) throws EmployeeException {
+    public Employee createEmployee(Employee employee) {
         validateEmployee(employee);
         setGeneratedPassword(employee);
         employee.setActive(true);
@@ -101,7 +101,7 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
-    private void validateEmployee(Employee employee) throws EmployeeException {
+    private void validateEmployee(Employee employee) {
         String firstName = employee.getFirstName().trim();
         String lastName = employee.getLastName().trim();
         if (StringUtils.isMatch(firstName, "[a-zA-Z ]+") && StringUtils.isMatch(lastName, "[a-zA-Z ]+")) {
@@ -119,7 +119,7 @@ public class EmployeeService {
     }
 
     @Transactional
-    public boolean toggleEmployeeStatus(long id) throws EmployeeException {
+    public boolean toggleEmployeeStatus(long id) {
         existsEmployeeById(id);
         boolean employeeStatus = employeeRepository.getStatusById(id);
         boolean invertedEmployeeStatus = !employeeStatus;
@@ -127,7 +127,7 @@ public class EmployeeService {
         return invertedEmployeeStatus;
     }
 
-    public void editEmployee(Employee employee, EmployeeDTO editedEmployee) throws EmployeeException {
+    public void editEmployee(Employee employee, EmployeeDTO editedEmployee) {
         validateEmployee(employee);
         editInformation(editedEmployee, employee);
         saveEmployee(employee);
@@ -142,13 +142,13 @@ public class EmployeeService {
     }
 
 
-    public void editCurrentEmployee(Employee employee, EmployeeDTO editedEmployee) throws EmployeeException {
+    public void editCurrentEmployee(Employee employee, EmployeeDTO editedEmployee) {
         validateEmployee(employee);
         employee.setFirstName(editedEmployee.getFirstName());
         employee.setLastName(editedEmployee.getLastName());
     }
 
-    private void verifyCurrentPassword(String encodedPassword, String rawPassword) throws EmployeeException {
+    private void verifyCurrentPassword(String encodedPassword, String rawPassword) {
         boolean matchedPassword = encoder.matches(rawPassword, encodedPassword);
         if (!matchedPassword) {
             throw new EmployeeException("Bad credentials", ErrorCode.GENERAL_ERROR);
@@ -162,7 +162,7 @@ public class EmployeeService {
 //        saveEmployee(employee);
 //    }
 
-    public Employee getEmployeeByEmail(String email) throws EmployeeException {
+    public Employee getEmployeeByEmail(String email) {
         if (email == null) {
             throw new EmployeeException("Invalid param", ErrorCode.GENERAL_ERROR);
         }

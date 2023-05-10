@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
@@ -41,6 +43,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        // jwt is not refreshed !!!
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -59,7 +62,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         // add necessary response headers
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+        String authority = !userDetails.getAuthorities().isEmpty() ? userDetails.getAuthorities().toArray()[0].toString() : null;
+        List<String> exposedHeaders = Arrays.asList("Authorization", "id", "user_route", "Role", "firstLogin");
+        String exposedHeadersStringList = exposedHeaders.toString();
+        String exposedHeadersString = exposedHeadersStringList.substring(1, exposedHeadersStringList.length() - 1);
+        response.addHeader("Access-Control-Expose-Headers", exposedHeadersString);
+        response.addHeader("Role", authority);
+
         Employee employee = employeeRepository.findByEmail(userEmail);
+        response.addHeader("id", String.valueOf(employee.getId()));
         var jwtToken = jwtService.generateToken(employee);
         response.addHeader("Authorization", "Bearer " + jwtToken);
         filterChain.doFilter(request, response);
