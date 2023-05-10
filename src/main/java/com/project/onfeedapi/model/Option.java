@@ -18,7 +18,6 @@ public class Option extends Identity {
     @Column(name = "value")
     private String value;
 
-    @ManyToOne
-    @MapsId("questionId")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
 }

@@ -1,5 +1,6 @@
 package com.project.onfeedapi.service;
 
+import com.project.onfeedapi.dto.FormDTO;
 import com.project.onfeedapi.dto.OptionDTO;
 import com.project.onfeedapi.dto.QuestionDTO;
 import com.project.onfeedapi.mapper.OptionMapper;
@@ -20,9 +21,19 @@ public class OptionService {
     private final OptionRepository optionRepository;
 
 
-    public List<Option> create(List<OptionDTO> optionDTOList) {
-        List<Option> options = optionDTOList.stream().map((OptionMapper::convertToModel)).toList();
-        return optionRepository.saveAll(options);
+    public void setOptionsToQuestion(FormDTO formDTO, Question question) {
+        for (QuestionDTO q : formDTO.getQuestions()) {
+            if (q.getAnswerType() == AnswerType.SINGLE_SELECT || q.getAnswerType() == AnswerType.MULTIPLE_SELECT) {
+                List<Option> optionList = q.getOptions().stream().map(OptionMapper::convertToModel).toList();
+                for (Option o : optionList) {
+                    question.addOption(o);
+                }
+            }
+        }
+    }
+
+    public List<OptionDTO> getOptionsByQuestionId (Long questionId) {
+        return optionRepository.findByQuestionId(questionId).stream().map(OptionMapper::convertToDTO).toList();
     }
 
 }

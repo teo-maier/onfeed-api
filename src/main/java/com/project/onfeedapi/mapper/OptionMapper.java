@@ -8,7 +8,6 @@ public class OptionMapper {
         return OptionDTO.builder()
                 .id(option.getId())
                 .value(option.getValue())
-                .question(QuestionMapper.convertToDTO(option.getQuestion()))
                 .build();
     }
 
@@ -16,7 +15,6 @@ public class OptionMapper {
         return Option.builder()
                 .id(optionDTO.getId())
                 .value(optionDTO.getValue())
-                .question(QuestionMapper.convertToModel(optionDTO.getQuestion()))
                 .build();
     }
 }

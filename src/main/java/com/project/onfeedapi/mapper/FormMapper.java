@@ -3,6 +3,7 @@ package com.project.onfeedapi.mapper;
 import com.project.onfeedapi.dto.FormDTO;
 import com.project.onfeedapi.model.Form;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class FormMapper {
@@ -12,16 +13,20 @@ public class FormMapper {
                 .id(form.getId())
                 .title(form.getTitle())
                 .description(form.getDescription())
-//                .questions(form.getQuestions().stream().map(QuestionMapper::convertToDTO).collect(Collectors.toList()))
+                .questions(form.getQuestions().stream().map(QuestionMapper::convertToDTO).collect(Collectors.toList()))
                 .build();
     }
 
     public static Form convertToModel(FormDTO formDTO) {
-        return Form.builder()
+        Form form = Form.builder()
                 .id(formDTO.getId())
                 .title(formDTO.getTitle())
                 .description(formDTO.getDescription())
-//                .questions(formDTO.getQuestions().stream().map(QuestionMapper::convertToModel).collect(Collectors.toList()))
+                .questions(new ArrayList<>())
                 .build();
+//        if (!formDTO.getQuestions().isEmpty()) {
+//            form.setQuestions(formDTO.getQuestions().stream().map(QuestionMapper::convertToModel).collect(Collectors.toList()));
+//        }
+        return form;
     }
 }

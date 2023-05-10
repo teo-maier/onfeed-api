@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -25,10 +26,19 @@ public class Question extends Identity {
     @Enumerated(EnumType.STRING)
     private AnswerType answerType;
 
-    @ManyToOne()
-    @JoinColumn(name = "form_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Form form;
 
-//    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Option> options;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Option> options = new ArrayList<>();
+
+    public void addOption(Option option) {
+        options.add(option);
+        option.setQuestion(this);
+    }
+
+    public void removeOption(Option option) {
+        options.remove(option);
+        option.setQuestion(null);
+    }
 }

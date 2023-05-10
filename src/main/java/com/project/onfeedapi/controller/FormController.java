@@ -31,7 +31,7 @@ public class FormController {
 
     @PutMapping("/{formId}")
     public ResponseEntity<AbstractResponseDTO> edit(@PathVariable Long formId, @RequestBody FormDTO editedForm) {
-        return ResponseHandler.handleResponse("User created successfully", formService.edit(formId, editedForm));
+        return ResponseHandler.handleResponse("Form updated successfully", formService.edit(formId, editedForm));
     }
 
 }
