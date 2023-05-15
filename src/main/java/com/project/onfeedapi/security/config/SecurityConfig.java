@@ -54,6 +54,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/question").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/question/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/question/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/team/**").permitAll()
                 .anyRequest()
                 .authenticated()
 //                .logout()

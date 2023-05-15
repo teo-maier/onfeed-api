@@ -2,9 +2,11 @@ package com.project.onfeedapi.service;
 
 import com.project.onfeedapi.dto.EmployeeDTO;
 import com.project.onfeedapi.dto.PaginatedRequestDTO;
+import com.project.onfeedapi.mapper.EmployeeMapper;
 import com.project.onfeedapi.model.Employee;
 import com.project.onfeedapi.repository.EmployeeRepository;
-import com.project.onfeedapi.utils.EmployeeType;
+import com.project.onfeedapi.specification.EmployeeSpecification;
+import com.project.onfeedapi.specification.search.EmployeeSearchCriteria;
 import com.project.onfeedapi.utils.PaginationUtils;
 import com.project.onfeedapi.utils.StringUtils;
 import com.project.onfeedapi.utils.exception.EmployeeException;
@@ -16,17 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -40,13 +34,13 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-//    public List<Employee> searchEmployee(String search) {
-//        List<String> inputSearchKeys = Arrays.asList("firstName", "lastName", "fullName", "email");
-//        EmployeeSearchCriteria employeeSearchCriteria = new EmployeeSearchCriteria(inputSearchKeys, search);
-//        EmployeeSpecification employeeSpecification = new EmployeeSpecification(employeeSearchCriteria);
-//        Sort sortByStatusAndName = Sort.by("active").descending().and(Sort.by("lastName").ascending()).and(Sort.by("firstName").ascending());
-//        return employeeRepository.findAll(employeeSpecification, sortByStatusAndName);
-//    }
+    public List<EmployeeDTO> searchEmployee(String search) {
+        List<String> inputSearchKeys = Arrays.asList("firstName", "lastName", "fullName", "email");
+        EmployeeSearchCriteria employeeSearchCriteria = new EmployeeSearchCriteria(inputSearchKeys, search);
+        EmployeeSpecification employeeSpecification = new EmployeeSpecification(employeeSearchCriteria);
+        Sort sortByStatusAndName = Sort.by("active").descending().and(Sort.by("lastName").ascending()).and(Sort.by("firstName").ascending());
+        return employeeRepository.findAll(employeeSpecification, sortByStatusAndName).stream().map(EmployeeMapper::convertToDTO).collect(Collectors.toList());
+    }
 
 
     public Page<Employee> getAllEmployeesPaginated(PaginatedRequestDTO request) {
@@ -58,29 +52,6 @@ public class EmployeeService {
             throw new EmployeeException("Invalid param", ErrorCode.GENERAL_ERROR);
         }
         return employeeRepository.findById(id).orElseThrow(() -> new EmployeeException("Employee does not exist", ErrorCode.NOT_FOUND));
-    }
-
-    public List<Employee> getAdminList(List<Employee> employees) {
-        List<Employee> adminList;
-        adminList = employees.stream()
-                .filter(e -> e.getType() == EmployeeType.ADMIN)
-                .collect(Collectors.toList());
-        if (adminList.isEmpty()) {
-            throw new EmployeeException("No admin found", ErrorCode.GENERAL_ERROR);
-        } else {
-            return adminList;
-        }
-    }
-
-    @Transactional
-    public void deleteEmployee(long id) {
-        existsEmployeeById(id);
-        boolean employeeStatus = employeeRepository.getStatusById(id);
-        if (employeeStatus) {
-            toggleEmployeeStatus(id);
-        } else {
-            throw new EmployeeException("Employee is already disabled", ErrorCode.GENERAL_ERROR);
-        }
     }
 
     private void existsEmployeeById(long id) {
@@ -118,29 +89,6 @@ public class EmployeeService {
         employee.setPassword(encodedPassword);
     }
 
-    @Transactional
-    public boolean toggleEmployeeStatus(long id) {
-        existsEmployeeById(id);
-        boolean employeeStatus = employeeRepository.getStatusById(id);
-        boolean invertedEmployeeStatus = !employeeStatus;
-        employeeRepository.toggleEmployeeStatus(id, invertedEmployeeStatus);
-        return invertedEmployeeStatus;
-    }
-
-    public void editEmployee(Employee employee, EmployeeDTO editedEmployee) {
-        validateEmployee(employee);
-        editInformation(editedEmployee, employee);
-        saveEmployee(employee);
-    }
-
-
-    private void editInformation(EmployeeDTO editedEmployee, Employee employee) {
-        employee.setFirstName(editedEmployee.getFirstName());
-        employee.setLastName(editedEmployee.getLastName());
-        employee.setEmail(editedEmployee.getEmail());
-        employee.setType(editedEmployee.getType());
-    }
-
 
     public void editCurrentEmployee(Employee employee, EmployeeDTO editedEmployee) {
         validateEmployee(employee);
@@ -172,12 +120,4 @@ public class EmployeeService {
         }
         return employee;
     }
-
-    public Employee getLoggedInEmployee(Principal principal) {
-        if (principal == null) {
-            return null;
-        }
-        return employeeRepository.findByEmail(principal.getName());
-    }
-
 }
