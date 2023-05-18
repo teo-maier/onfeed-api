@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeService.class);
-    private final BCryptPasswordEncoder encoder;
+//    private final BCryptPasswordEncoder encoder;
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
@@ -54,7 +54,7 @@ public class EmployeeService {
         return employeeRepository.findById(id).orElseThrow(() -> new EmployeeException("Employee does not exist", ErrorCode.NOT_FOUND));
     }
 
-    private void existsEmployeeById(long id) {
+    public void existsById(long id) {
         boolean exists = employeeRepository.existsById(id);
         if (!exists) {
             throw new EmployeeException("Employee does not exist", ErrorCode.NOT_FOUND);
@@ -63,7 +63,7 @@ public class EmployeeService {
 
     public Employee createEmployee(Employee employee) {
         validateEmployee(employee);
-        setGeneratedPassword(employee);
+//        setGeneratedPassword(employee);
         employee.setActive(true);
         return saveEmployee(employee);
     }
@@ -83,11 +83,11 @@ public class EmployeeService {
         }
     }
 
-    private void setGeneratedPassword(Employee employee) {
-        String password = employee.getEmail();
-        String encodedPassword = encoder.encode(password);
-        employee.setPassword(encodedPassword);
-    }
+//    private void setGeneratedPassword(Employee employee) {
+//        String password = employee.getEmail();
+//        String encodedPassword = encoder.encode(password);
+//        employee.setPassword(encodedPassword);
+//    }
 
 
     public void editCurrentEmployee(Employee employee, EmployeeDTO editedEmployee) {
@@ -96,12 +96,12 @@ public class EmployeeService {
         employee.setLastName(editedEmployee.getLastName());
     }
 
-    private void verifyCurrentPassword(String encodedPassword, String rawPassword) {
-        boolean matchedPassword = encoder.matches(rawPassword, encodedPassword);
-        if (!matchedPassword) {
-            throw new EmployeeException("Bad credentials", ErrorCode.GENERAL_ERROR);
-        }
-    }
+//    private void verifyCurrentPassword(String encodedPassword, String rawPassword) {
+//        boolean matchedPassword = encoder.matches(rawPassword, encodedPassword);
+//        if (!matchedPassword) {
+//            throw new EmployeeException("Bad credentials", ErrorCode.GENERAL_ERROR);
+//        }
+//    }
 
 //    public void changePassword(Employee employee, PasswordDTO passwordDTO) throws EmployeeException {
 //        verifyCurrentPassword(employee.getPassword(), passwordDTO.getPassword());

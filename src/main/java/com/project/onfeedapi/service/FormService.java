@@ -12,9 +12,11 @@ import com.project.onfeedapi.model.Form;
 import com.project.onfeedapi.model.Option;
 import com.project.onfeedapi.model.Question;
 import com.project.onfeedapi.repository.FormRepository;
+import com.project.onfeedapi.utils.exception.ErrorCode;
 import com.project.onfeedapi.utils.exception.OnfeedExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,7 +39,13 @@ public class FormService {
 
     public FormDTO getById(Long id) {
         return FormMapper.convertToDTO(formRepository.findById(id)
-                .orElseThrow(() -> new ExceptionDTO("Could not find form with this id.")));
+                .orElseThrow(() -> new ExceptionDTO("Could not find form with this id.", HttpStatus.NOT_FOUND)));
+    }
+
+    public void existsById(Long id) {
+        if (!formRepository.existsById(id)) {
+            throw new ExceptionDTO("Could not find form with this id.", HttpStatus.NOT_FOUND);
+        }
     }
 
 

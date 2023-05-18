@@ -1,5 +1,6 @@
 package com.project.onfeedapi.security.auth;
 
+import com.project.onfeedapi.utils.EmployeeType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,4 +14,5 @@ public class AuthenticationRequest {
 
     private String email;
     String password;
+//    EmployeeType type;
 }

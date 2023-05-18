@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
     Employee findByEmail(String email);
 
+    Boolean existsByEmail(String email);
+
     Optional<Employee> findOptionalByEmail(String email);
 
     @Query("select e.active from employees e where e.id = :id")

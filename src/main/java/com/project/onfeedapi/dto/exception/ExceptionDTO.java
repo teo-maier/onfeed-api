@@ -20,8 +20,14 @@ public class ExceptionDTO extends RuntimeException {
         super(message);
     }
 
+    public ExceptionDTO(String message, HttpStatus httpStatus) {
+        this.message = message;
+        this.httpStatus = httpStatus;
+    }
+
+
     @Builder(builderMethodName = "fullBuilder")
-    public ExceptionDTO(String message,HttpStatus httpStatus, int code) {
+    public ExceptionDTO(String message, HttpStatus httpStatus, int code) {
         super(message);
         this.code = code;
         this.httpStatus = httpStatus;

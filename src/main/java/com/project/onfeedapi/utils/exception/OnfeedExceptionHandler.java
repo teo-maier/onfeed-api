@@ -3,8 +3,6 @@ package com.project.onfeedapi.utils.exception;
 import com.project.onfeedapi.dto.exception.ExceptionDTO;
 import com.project.onfeedapi.dto.exception.OnfeedAuthenticationException;
 import com.project.onfeedapi.dto.response.ResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,7 +22,9 @@ public class OnfeedExceptionHandler {
                 .code(ex.getHttpStatus().value())
                 .message(ex.getMessage())
                 .build();
-        return ResponseEntity.status(exceptionDTO.getCode()).body(exceptionDTO);
+//        return ResponseEntity.status(exceptionDTO.getCode()).body(exceptionDTO);
+        return new ResponseEntity<>(new ExceptionDTO(exceptionDTO.getMessage()), exceptionDTO.getHttpStatus());
+
     }
 
     @ExceptionHandler(EmployeeException.class)
