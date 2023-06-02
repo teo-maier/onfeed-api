@@ -59,7 +59,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public PasswordEncoder  passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -89,7 +89,12 @@ public class ApplicationConfig {
                 .requestMatchers(HttpMethod.POST, "/session").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/session").permitAll()
                 .requestMatchers(HttpMethod.GET, "/session/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/session-recipients").permitAll()
                 .requestMatchers(HttpMethod.GET, "/employee/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/answer/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/answer").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/answer").permitAll()
+
                 .anyRequest()
                 .authenticated()
 //                .logout()

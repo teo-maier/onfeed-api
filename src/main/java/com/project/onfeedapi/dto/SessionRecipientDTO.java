@@ -4,6 +4,8 @@ package com.project.onfeedapi.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -19,4 +21,10 @@ public class SessionRecipientDTO {
     private EmployeeDTO employee;
 
     private boolean isCompleted;
+
+    private boolean isReviewed;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

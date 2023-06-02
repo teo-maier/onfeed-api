@@ -34,10 +34,7 @@ public class EmployeeController {
 
     @GetMapping("/{employeeId}")
     public ResponseEntity<AbstractResponseDTO> getEmployee(@PathVariable("employeeId") long id) {
-        Employee employee = null;
-        employee = employeeService.getEmployee(id);
-        EmployeeDTO employeeDTO = EmployeeMapper.convertToDTO(employee);
-        return ResponseHandler.handleResponse("Employee by id", employeeDTO);
+        return ResponseHandler.handleResponse("Employee by id", employeeService.getEmployee(id));
     }
 
     @GetMapping("/me")

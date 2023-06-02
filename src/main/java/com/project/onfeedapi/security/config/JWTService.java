@@ -116,6 +116,9 @@ public class JWTService {
             return null;
         }
     }
+    public String getJwtFromAuthHeader(HttpServletRequest request) {
+        return request.getHeader("Authorization");
+    }
 
 
     public ResponseCookie generateJwtCookie(User userPrincipal, List<String> roles) {

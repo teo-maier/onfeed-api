@@ -47,11 +47,12 @@ public class EmployeeService {
         return employeeRepository.findAll(PaginationUtils.createPageableWithSort(request));
     }
 
-    public Employee getEmployee(long id) {
+    public EmployeeDTO getEmployee(long id) {
         if (id < 0) {
             throw new EmployeeException("Invalid param", ErrorCode.GENERAL_ERROR);
         }
-        return employeeRepository.findById(id).orElseThrow(() -> new EmployeeException("Employee does not exist", ErrorCode.NOT_FOUND));
+        return EmployeeMapper.convertToDTO(employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeException("Employee does not exist", ErrorCode.NOT_FOUND)));
     }
 
     public void existsById(long id) {

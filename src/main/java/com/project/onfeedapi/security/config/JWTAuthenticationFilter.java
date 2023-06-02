@@ -92,6 +92,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
+            if(jwt == null) {
+                jwt = parseFromAuthHeader(request);
+            }
             if (jwt != null && jwtService.validateJwtToken(jwt)) {
                 String username = jwtService.getUserNameFromJwtToken(jwt);
 
@@ -126,5 +129,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private String parseJwt(HttpServletRequest request) {
         return jwtService.getJwtFromCookies(request);
+    }
+
+    private String parseFromAuthHeader(HttpServletRequest request) {
+        return jwtService.getJwtFromAuthHeader(request);
     }
 }

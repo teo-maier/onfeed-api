@@ -9,6 +9,9 @@ public class SessionRecipientMapper {
                 .id(sessionRecipient.getId())
                 .employee(EmployeeMapper.convertToDTO(sessionRecipient.getEmployee()))
                 .isCompleted(sessionRecipient.isCompleted())
+                .isReviewed(sessionRecipient.isReviewed())
+                .createdAt(sessionRecipient.getCreatedAt())
+                .updatedAt(sessionRecipient.getUpdatedAt())
                 .build();
     }
 
@@ -17,6 +20,9 @@ public class SessionRecipientMapper {
                 .id(sessionRecipientDTO.getId())
                 .employee(EmployeeMapper.convertToModel(sessionRecipientDTO.getEmployee()))
                 .isCompleted(sessionRecipientDTO.isCompleted())
+                .isReviewed(sessionRecipientDTO.isReviewed())
+                .createdAt(sessionRecipientDTO.getCreatedAt())
+                .updatedAt(sessionRecipientDTO.getUpdatedAt())
                 .build();
     }
 }

@@ -4,6 +4,7 @@ package com.project.onfeedapi.service;
 import com.project.onfeedapi.dto.FormDTO;
 import com.project.onfeedapi.dto.OptionDTO;
 import com.project.onfeedapi.dto.QuestionDTO;
+import com.project.onfeedapi.dto.exception.ExceptionDTO;
 import com.project.onfeedapi.mapper.OptionMapper;
 import com.project.onfeedapi.mapper.QuestionMapper;
 import com.project.onfeedapi.model.Form;
@@ -24,6 +25,11 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final OptionService optionService;
+
+    public QuestionDTO getById(Long questionId) {
+        return QuestionMapper.convertToDTO(questionRepository.findById(questionId)
+                .orElseThrow(() -> new ExceptionDTO("Could not find question by id")));
+    }
 
     public List<QuestionDTO> getAllByFormId(Long formId) {
         List<Question> questions = questionRepository.findAllByFormId(formId);

@@ -1,37 +1,24 @@
 package com.project.onfeedapi.service;
 
 import com.project.onfeedapi.dto.FormDTO;
-import com.project.onfeedapi.dto.OptionDTO;
-import com.project.onfeedapi.dto.QuestionDTO;
 import com.project.onfeedapi.dto.exception.ExceptionDTO;
 import com.project.onfeedapi.mapper.FormMapper;
-import com.project.onfeedapi.mapper.OptionMapper;
 import com.project.onfeedapi.mapper.QuestionMapper;
-import com.project.onfeedapi.model.Employee;
 import com.project.onfeedapi.model.Form;
 import com.project.onfeedapi.model.Option;
 import com.project.onfeedapi.model.Question;
 import com.project.onfeedapi.repository.FormRepository;
-import com.project.onfeedapi.utils.exception.ErrorCode;
-import com.project.onfeedapi.utils.exception.OnfeedExceptionHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class FormService {
     private final FormRepository formRepository;
-
     private final QuestionService questionService;
-    private final OptionService optionService;
-
 
     public List<FormDTO> getAll() {
         return formRepository.findAll().stream().map(FormMapper::convertToDTO).toList();
@@ -73,6 +60,18 @@ public class FormService {
         }
         formRepository.save(formModel);
         return form;
+    }
+
+    public FormDTO getFormByRecipientId(Long recipientId) {
+        return FormMapper.convertToDTO(formRepository.getFormByRecipientId(recipientId));
+    }
+
+    public void delete(Long formId) {
+        if (formRepository.existsById(formId)) {
+            formRepository.deleteById(formId);
+        } else {
+            throw new ExceptionDTO("Could not find form by id", HttpStatus.NOT_FOUND);
+        }
     }
 
 }

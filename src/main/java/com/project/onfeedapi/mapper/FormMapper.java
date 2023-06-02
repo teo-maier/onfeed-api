@@ -18,15 +18,11 @@ public class FormMapper {
     }
 
     public static Form convertToModel(FormDTO formDTO) {
-        Form form = Form.builder()
+        return Form.builder()
                 .id(formDTO.getId())
                 .title(formDTO.getTitle())
                 .description(formDTO.getDescription())
                 .questions(new ArrayList<>())
                 .build();
-//        if (!formDTO.getQuestions().isEmpty()) {
-//            form.setQuestions(formDTO.getQuestions().stream().map(QuestionMapper::convertToModel).collect(Collectors.toList()));
-//        }
-        return form;
     }
 }

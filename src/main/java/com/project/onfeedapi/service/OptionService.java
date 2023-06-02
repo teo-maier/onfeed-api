@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -23,16 +24,18 @@ public class OptionService {
 
     public void setOptionsToQuestion(FormDTO formDTO, Question question) {
         for (QuestionDTO q : formDTO.getQuestions()) {
-            if (q.getAnswerType() == AnswerType.SINGLE_SELECT || q.getAnswerType() == AnswerType.MULTIPLE_SELECT) {
-                List<Option> optionList = q.getOptions().stream().map(OptionMapper::convertToModel).toList();
-                for (Option o : optionList) {
-                    question.addOption(o);
+            if (Objects.equals(q.getValue(), question.getValue())) {
+                if (q.getAnswerType() == AnswerType.SINGLE_SELECT || q.getAnswerType() == AnswerType.MULTIPLE_SELECT) {
+                    List<Option> optionList = q.getOptions().stream().map(OptionMapper::convertToModel).toList();
+                    for (Option o : optionList) {
+                        question.addOption(o);
+                    }
                 }
             }
         }
     }
 
-    public List<OptionDTO> getOptionsByQuestionId (Long questionId) {
+    public List<OptionDTO> getOptionsByQuestionId(Long questionId) {
         return optionRepository.findByQuestionId(questionId).stream().map(OptionMapper::convertToDTO).toList();
     }
 

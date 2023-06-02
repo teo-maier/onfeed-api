@@ -34,4 +34,15 @@ public class FormController {
         return ResponseHandler.handleResponse("Form updated successfully", formService.edit(formId, editedForm));
     }
 
+    @GetMapping("/recipient")
+    public ResponseEntity<AbstractResponseDTO> getFormByRecipientId(@RequestParam Long recipientId) {
+        return ResponseHandler.handleResponse("Results by session id", formService.getFormByRecipientId(recipientId));
+    }
+
+    @DeleteMapping("/{formId}")
+    public ResponseEntity<AbstractResponseDTO> delete(@PathVariable Long formId) {
+        formService.delete(formId);
+        return ResponseHandler.handleResponse(String.format("Session with id %d deleted successfully", formId), formId);
+    }
+
 }
