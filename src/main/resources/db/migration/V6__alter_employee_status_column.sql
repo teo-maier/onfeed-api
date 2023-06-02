@@ -1,0 +1,1 @@
+ALTER TABLE `employees` MODIFY `status` bit(1) DEFAULT 1;
