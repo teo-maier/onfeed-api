@@ -2,6 +2,7 @@ package com.project.onfeedapi.service;
 
 import com.project.onfeedapi.dto.EmployeeDTO;
 import com.project.onfeedapi.dto.PaginatedRequestDTO;
+import com.project.onfeedapi.dto.PasswordDTO;
 import com.project.onfeedapi.mapper.EmployeeMapper;
 import com.project.onfeedapi.model.Employee;
 import com.project.onfeedapi.repository.EmployeeRepository;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeService.class);
-//    private final BCryptPasswordEncoder encoder;
+    private final BCryptPasswordEncoder encoder;
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
@@ -84,32 +85,31 @@ public class EmployeeService {
         }
     }
 
-//    private void setGeneratedPassword(Employee employee) {
-//        String password = employee.getEmail();
-//        String encodedPassword = encoder.encode(password);
-//        employee.setPassword(encodedPassword);
-//    }
-
 
     public void editCurrentEmployee(Employee employee, EmployeeDTO editedEmployee) {
         validateEmployee(employee);
+        employee.setId(editedEmployee.getId());
         employee.setFirstName(editedEmployee.getFirstName());
         employee.setLastName(editedEmployee.getLastName());
+        employee.setType(editedEmployee.getType());
+        employee.setEmail(editedEmployee.getEmail());
+        employee.setActive(editedEmployee.isActive());
+        employeeRepository.save(employee);
     }
 
-//    private void verifyCurrentPassword(String encodedPassword, String rawPassword) {
-//        boolean matchedPassword = encoder.matches(rawPassword, encodedPassword);
-//        if (!matchedPassword) {
-//            throw new EmployeeException("Bad credentials", ErrorCode.GENERAL_ERROR);
-//        }
-//    }
+    private void verifyCurrentPassword(String encodedPassword, String rawPassword) {
+        boolean matchedPassword = encoder.matches(rawPassword, encodedPassword);
+        if (!matchedPassword) {
+            throw new EmployeeException("Bad credentials", ErrorCode.GENERAL_ERROR);
+        }
+    }
 
-//    public void changePassword(Employee employee, PasswordDTO passwordDTO) throws EmployeeException {
-//        verifyCurrentPassword(employee.getPassword(), passwordDTO.getPassword());
-//        String encodedPassword = encoder.encode(passwordDTO.getNewPassword());
-//        employee.setPassword(encodedPassword);
-//        saveEmployee(employee);
-//    }
+    public void changePassword(Employee employee, PasswordDTO passwordDTO) throws EmployeeException {
+        verifyCurrentPassword(employee.getPassword(), passwordDTO.getPassword());
+        String encodedPassword = encoder.encode(passwordDTO.getNewPassword());
+        employee.setPassword(encodedPassword);
+        saveEmployee(employee);
+    }
 
     public Employee getEmployeeByEmail(String email) {
         if (email == null) {

@@ -91,17 +91,13 @@ public class ApplicationConfig {
                 .requestMatchers(HttpMethod.GET, "/session/**").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/session-recipients").permitAll()
                 .requestMatchers(HttpMethod.GET, "/employee/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/employee").permitAll()
                 .requestMatchers(HttpMethod.GET, "/answer/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/answer").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/answer").permitAll()
-
                 .anyRequest()
                 .authenticated()
-//                .logout()
-//                .logoutUrl("/api/v1/auth/logout")
-//                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
         ;
-
         return http.build();
     }
 

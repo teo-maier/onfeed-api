@@ -50,10 +50,13 @@ public class AuthenticationController {
         }
 
         // Create new user's account
-        Employee user = new Employee(signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword())
-//                signUpRequest.getType()
+        Employee user = new Employee(signUpRequest.getFirstName(),
+                signUpRequest.getLastName(),
+                signUpRequest.getEmail(),
+                encoder.encode(signUpRequest.getPassword()),
+                signUpRequest.getType()
         );
+        user.setActive(true);
 
         userRepository.save(user);
         return ResponseEntity.ok(user);

@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthenticationRequest {
 
+    private String firstName;
+    private String lastName;
     private String email;
     String password;
-//    EmployeeType type;
+    EmployeeType type;
 }

@@ -1,5 +1,6 @@
 package com.project.onfeedapi.controller;
 
+import com.project.onfeedapi.dto.PasswordDTO;
 import com.project.onfeedapi.dto.response.AbstractResponseDTO;
 import com.project.onfeedapi.dto.EmployeeDTO;
 import com.project.onfeedapi.dto.PaginatedRequestDTO;
@@ -45,26 +46,23 @@ public class EmployeeController {
         return ResponseHandler.handleResponse("Employee's details", newEmployeeDTO);
     }
 
-    @PutMapping(value = "/me", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<AbstractResponseDTO> editEmployee(@RequestPart("employeeDetailsDTO") EmployeeDTO employeeDTO,
+    @PutMapping()
+    public ResponseEntity<AbstractResponseDTO> editEmployee(@RequestBody EmployeeDTO employeeDTO,
                                                             Principal principal) {
         Employee employee = null;
         employee = employeeService.getEmployeeByEmail(principal.getName());
         employeeService.editCurrentEmployee(employee, employeeDTO);
         EmployeeDTO editedEmployee = EmployeeMapper.convertToDTO(employee);
-        return ResponseHandler.handleResponse("Current employee edited with avatar", editedEmployee);
+        return ResponseHandler.handleResponse("Current employee edited", editedEmployee);
     }
 
 
-//    @PutMapping("/password")
-//    public ResponseEntity<AbstractResponseDTO> changePassword(@RequestBody PasswordDTO passwordDTO, Principal principal) {
-//        Employee employee = null;
-//        try {
-//            employee = employeeService.getEmployeeByEmail(principal.getName());
-//            employeeService.changePassword(employee, passwordDTO);
-//            return ResponseHandler.handleResponse("Password changed", null);
-//        } catch (EmployeeException e) {
-//            return ExceptionHandler.handleException(e);
-//        }
+    @PutMapping("/password")
+    public ResponseEntity<AbstractResponseDTO> changePassword(@RequestBody PasswordDTO passwordDTO, Principal principal) {
+        Employee employee = null;
+        employee = employeeService.getEmployeeByEmail(principal.getName());
+        employeeService.changePassword(employee, passwordDTO);
+        return ResponseHandler.handleResponse("Password changed", null);
+    }
 }
 
