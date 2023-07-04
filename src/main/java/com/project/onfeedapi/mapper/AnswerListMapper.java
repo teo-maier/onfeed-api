@@ -16,6 +16,7 @@ public class AnswerListMapper {
                     .value(answer.getValue())
                     .employee(EmployeeMapper.convertToDTO(answer.getEmployee()))
                     .question(QuestionMapper.convertToDTO(answer.getQuestion()))
+                    .session(SessionMapper.convertToDTO(answer.getSession()))
                     .build();
             answerListDTO.getAnswers().add(answerDTO);
         }
@@ -28,6 +29,7 @@ public class AnswerListMapper {
                 .value(answer.getValue())
                 .employee(EmployeeMapper.convertToDTO(answer.getEmployee()))
                 .question(QuestionMapper.convertToDTO(answer.getQuestion()))
+                .session(SessionMapper.convertToDTO(answer.getSession()))
                 .build();
     }
 
@@ -39,6 +41,7 @@ public class AnswerListMapper {
                     .value(answerDTO.getValue())
                     .employee(EmployeeMapper.convertToModel(answerDTO.getEmployee()))
                     .question(QuestionMapper.convertToModel(answerDTO.getQuestion()))
+                    .session(SessionMapper.convertToModel(answerListDTO.getSession()))
                     .options(new ArrayList<>())
                     .build());
         }

@@ -1,6 +1,5 @@
 package com.project.onfeedapi.controller;
 
-import com.project.onfeedapi.dto.SessionDTO;
 import com.project.onfeedapi.dto.SessionRecipientDTO;
 import com.project.onfeedapi.dto.response.AbstractResponseDTO;
 import com.project.onfeedapi.service.SessionRecipientService;
@@ -19,6 +18,11 @@ public class SessionRecipientsController {
     @GetMapping("/{recipientId}")
     public ResponseEntity<AbstractResponseDTO> getById(@PathVariable Long recipientId) {
         return ResponseHandler.handleResponse("Get recipient by session id", sessionRecipientService.getById(recipientId));
+    }
+
+    @GetMapping("/{employeeId}/{sessionId}")
+    public ResponseEntity<AbstractResponseDTO> getByEmployeeIdAndSessionId(@PathVariable Long employeeId, @PathVariable Long sessionId) {
+        return ResponseHandler.handleResponse("Get recipient by session id", sessionRecipientService.getByEmployeeIdAndSessionId(employeeId, sessionId));
     }
 
     @GetMapping

@@ -2,6 +2,8 @@ package com.project.onfeedapi.service;
 
 import com.project.onfeedapi.dto.AnswerDTO;
 import com.project.onfeedapi.dto.AnswerListDTO;
+import com.project.onfeedapi.dto.FormDTO;
+import com.project.onfeedapi.dto.SessionDTO;
 import com.project.onfeedapi.mapper.AnswerListMapper;
 import com.project.onfeedapi.mapper.OptionMapper;
 import com.project.onfeedapi.model.Answer;
@@ -23,8 +25,8 @@ public class AnswerService {
 
     private final SessionRecipientService sessionRecipientService;
 
-    public AnswerDTO getByQuestionId(Long questionId, Long employeeId) {
-        Answer answer = answerRepository.getByQuestionIdAndEmployeeId(questionId, employeeId);
+    public AnswerDTO getBySessionEmployeeAndQuestion(Long sessionId, Long employeeId, Long questionId) {
+        Answer answer = answerRepository.getBySessionIdAndEmployeeIdAndQuestionId(sessionId, employeeId, questionId);
         AnswerDTO answerDTO = AnswerListMapper.convertToDTO(answer);
         answerDTO.setOptions((answer.getOptions().stream().map(OptionMapper::convertToOptionAnswerDTO).toList()));
         return answerDTO;
@@ -38,7 +40,8 @@ public class AnswerService {
         List<Answer> answerList = AnswerListMapper.convertListToModel(answerListDTO);
         optionAnswerService.setOptionsToAnswer(answerListDTO, answerList);
         answerRepository.saveAll(answerList);
-        sessionRecipientService.setCompleted(answerList.get(0).getQuestion().getId(), answerList.get(0).getEmployee().getId());
+        SessionDTO sessionDTO = answerListDTO.getSession();
+        sessionRecipientService.setCompleted(sessionDTO.getId(), answerList.get(0).getEmployee().getId());
         return answerListDTO;
     }
 }

@@ -17,4 +17,5 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnswerListDTO {
     private List<AnswerDTO> answers;
+    private SessionDTO session;
 }

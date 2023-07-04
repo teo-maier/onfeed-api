@@ -18,7 +18,8 @@ import java.util.List;
 @Getter
 @SuperBuilder
 @Entity(name = "answers")
-@Table(name = "answers")
+@Table(name = "answers", uniqueConstraints = {
+        @UniqueConstraint(name = "UniqueQuestionEmployeeAndSession", columnNames = {"question_id", "employee_id", "session_id"})})
 public class Answer extends Identity {
     @Column(name = "value")
     private String value;
@@ -31,6 +32,10 @@ public class Answer extends Identity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id")
+    private Session session;
 
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OptionAnswer> options = new ArrayList<>();

@@ -18,8 +18,8 @@ public class AnswerController {
     private final AnswerService answerService;
 
     @GetMapping("/question")
-    public ResponseEntity<AbstractResponseDTO> getByQuestionIdAndEmployeeId(@RequestParam Long questionId, @RequestParam Long employeeId) {
-        return ResponseHandler.handleResponse("Get answer by question id", answerService.getByQuestionId(questionId, employeeId));
+    public ResponseEntity<AbstractResponseDTO> getByQuestionIdAndEmployeeId(@RequestParam Long sessionId, @RequestParam Long employeeId, @RequestParam Long questionId) {
+        return ResponseHandler.handleResponse("Get answer by question id", answerService.getBySessionEmployeeAndQuestion(sessionId, employeeId, questionId));
     }
 
     @PostMapping

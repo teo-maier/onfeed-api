@@ -90,6 +90,7 @@ public class ApplicationConfig {
                 .requestMatchers(HttpMethod.PUT, "/session").permitAll()
                 .requestMatchers(HttpMethod.GET, "/session/**").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/session-recipients").permitAll()
+                .requestMatchers(HttpMethod.GET, "/session-recipients/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/employee/**").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/employee").permitAll()
                 .requestMatchers(HttpMethod.GET, "/answer/**").permitAll()

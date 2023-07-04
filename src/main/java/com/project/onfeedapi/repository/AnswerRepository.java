@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long>, JpaSpecificationExecutor<Answer> {
 
-    Answer getByQuestionIdAndEmployeeId(Long questionId, Long employeeId);
+    Answer getBySessionIdAndEmployeeIdAndQuestionId(Long sessionId, Long employeeId, Long questionId);
 }

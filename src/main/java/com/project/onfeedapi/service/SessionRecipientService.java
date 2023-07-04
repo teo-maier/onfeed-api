@@ -8,6 +8,7 @@ import com.project.onfeedapi.dto.exception.ExceptionDTO;
 import com.project.onfeedapi.mapper.EmployeeMapper;
 import com.project.onfeedapi.mapper.SessionMapper;
 import com.project.onfeedapi.mapper.SessionRecipientMapper;
+import com.project.onfeedapi.model.Employee;
 import com.project.onfeedapi.model.Session;
 import com.project.onfeedapi.model.SessionRecipient;
 import com.project.onfeedapi.repository.SessionRecipientsRepository;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -39,6 +41,15 @@ public class SessionRecipientService {
                 .orElseThrow(() -> new ExceptionDTO("Could not find session recipient by id")));
     }
 
+    public SessionRecipientDTO getByEmployeeIdAndSessionId(Long employeeId, Long sessionId) {
+        SessionRecipient sessionRecipient = getSessionRecipientByEmployeeAndSession(sessionId, employeeId);
+        SessionRecipientDTO sessionRecipientDTO = SessionRecipientMapper.convertToDTO(sessionRecipient);
+        if (Objects.isNull(sessionRecipientDTO)) {
+            throw new ExceptionDTO("Could not find session recipient by id");
+        }
+        return sessionRecipientDTO;
+    }
+
     public SessionResultsDTO getSessionResultsBySessionId(Long sessionId) {
         List<SessionRecipientDTO> sessionRecipientDTOS = getAllBySessionId(sessionId);
         int totalRecipients = sessionRecipientDTOS.size();
@@ -51,11 +62,16 @@ public class SessionRecipientService {
                 .build();
     }
 
-
-    public void setCompleted(Long questionId, Long employeeId) {
-        SessionRecipient sessionRecipient = sessionRecipientsRepository.getRecipientByQuestionAndEmployee(questionId, employeeId);
+    public void setCompleted(Long sessionId, Long employeeId) {
+        SessionRecipient sessionRecipient = getSessionRecipientByEmployeeAndSession(sessionId, employeeId);
         sessionRecipient.setCompleted(true);
         sessionRecipientsRepository.save(sessionRecipient);
+    }
+
+    private SessionRecipient getSessionRecipientByEmployeeAndSession(Long sessionId, Long employeeId) {
+        Session session = SessionMapper.convertToModel(sessionService.getById(sessionId));
+        Employee employee = EmployeeMapper.convertToModel(employeeService.getEmployee(employeeId));
+        return sessionRecipientsRepository.getBySessionAndEmployee(session, employee);
     }
 
     public SessionRecipientDTO edit(Long recipientId, SessionRecipientDTO sessionRecipientDTO) {

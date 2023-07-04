@@ -1,6 +1,10 @@
 package com.project.onfeedapi.repository;
 
+import com.project.onfeedapi.dto.EmployeeDTO;
+import com.project.onfeedapi.dto.SessionDTO;
+import com.project.onfeedapi.model.Employee;
 import com.project.onfeedapi.model.Form;
+import com.project.onfeedapi.model.Session;
 import com.project.onfeedapi.model.SessionRecipient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -21,14 +25,7 @@ public interface SessionRecipientsRepository extends JpaRepository<SessionRecipi
     @Query("select sr from session_recipients sr where sr.employee.id = :employeeId")
     List<SessionRecipient> getRecipientsByEmployeeId();
 
-    @Query(value = "SELECT sr.* " +
-            "FROM session_recipients sr " +
-            "JOIN (SELECT s.id " +
-            "      FROM sessions s " +
-            "      JOIN (SELECT q.form_id " +
-            "            FROM answers a " +
-            "            JOIN questions q ON a.question_id = q.id " +
-            "            WHERE q.id = :questionId) q1 ON q1.form_id = s.form_id) q2 ON q2.id = sr.session_id " +
-            "WHERE sr.employee_id = :employeeId", nativeQuery = true)
-    SessionRecipient getRecipientByQuestionAndEmployee(@Param("questionId") Long questionId, @Param("employeeId") Long employeeId);
+    SessionRecipient getBySessionAndEmployee(Session session, Employee employee);
+
+    SessionRecipient getByEmployee(Employee employee);
 }

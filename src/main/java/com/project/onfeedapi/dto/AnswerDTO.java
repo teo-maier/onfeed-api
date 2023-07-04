@@ -22,9 +22,11 @@ public class AnswerDTO {
     @NonNull
     private QuestionDTO question;
 
-
     @NonNull
     private EmployeeDTO employee;
+
+    @NonNull
+    private SessionDTO session;
 
     @Nullable
     private List<OptionAnswerDTO> options;
